@@ -1,0 +1,385 @@
+Workloads & Access Patterns System Design-এর খুব গুরুত্বপূর্ণ একটি concept। সহজভাবে বুঝলে, system-এ কী ধরনের কাজ কতবার হচ্ছে এবং কীভাবে data access করা হচ্ছে—এটাই Workloads & Access Patterns।
+
+1. Workload কী?
+
+Workload = তোমার system-এর উপর কী ধরনের কাজের চাপ পড়ছে।
+
+অর্থাৎ application-এ users কী কী operation করছে এবং সেগুলো কত frequency-তে হচ্ছে।
+
+উদাহরণ:
+
+একটি e-commerce application-এ:
+
+User
+ ├── Browse products
+ ├── Search products
+ ├── View product
+ ├── Add to cart
+ ├── Place order
+ └── Make payment
+
+এগুলো প্রত্যেকটি system-এর workload-এর অংশ।
+
+ধরো:
+
+প্রতি সেকেন্ডে:
+
+Product Read       = 10,000
+Product Search     = 5,000
+Add to Cart        = 500
+Create Order       = 100
+Payment            = 50
+
+এখানে system-এর workload মূলত read-heavy।
+
+2. Access Pattern কী?
+
+Access Pattern = Application কীভাবে database/data access করছে।
+
+অর্থাৎ:
+
+"আমরা data কীভাবে read/write করছি?"
+
+ধরো database-এ এই data আছে:
+
+Users
+
+id | name | email
+1  | Rahim | rahim@gmail.com
+2  | Karim | karim@gmail.com
+3  | Hasan | hasan@gmail.com
+
+Application যদি প্রায় সবসময় করে:
+
+Get user by ID
+
+তাহলে একটি access pattern হচ্ছে:
+
+SELECT * FROM users WHERE id = ?
+
+আবার যদি প্রায় সবসময় করে:
+
+Find user by email
+
+তাহলে access pattern:
+
+SELECT * FROM users WHERE email = ?
+
+এই দুইটি query-এর frequency এবং structure জানলে আমরা database index design করতে পারি।
+
+3. Workload বনাম Access Pattern
+
+সহজভাবে:
+
+Workload
+   ↓
+System-এ কী কী কাজ হচ্ছে?
+
+Access Pattern
+   ↓
+Data কীভাবে access হচ্ছে?
+
+আরও সহজ:
+
+Workload = WHAT + HOW MUCH
+
+Access Pattern = HOW
+
+উদাহরণ:
+
+WHAT?
+User profile read
+
+HOW MUCH?
+প্রতি সেকেন্ডে 10,000 বার
+
+HOW?
+userId দিয়ে database থেকে lookup
+
+এটাই workload + access pattern।
+
+4. Read-heavy vs Write-heavy
+
+System design interview-এ এটি খুব গুরুত্বপূর্ণ।
+
+Read-heavy
+
+যদি read operation অনেক বেশি হয়:
+
+Reads  = 95%
+Writes = 5%
+
+তাহলে system হলো:
+
+Read-heavy system
+
+উদাহরণ:
+
+News website
+YouTube video metadata
+Product catalog
+Social media feed
+
+এক্ষেত্রে আমরা ব্যবহার করতে পারি:
+
+Database
+   ↓
+Cache
+   ↓
+Redis
+
+কারণ একই data বারবার read হচ্ছে।
+
+Write-heavy
+
+যদি write operation অনেক বেশি হয়:
+
+Reads  = 20%
+Writes = 80%
+
+তাহলে system হলো:
+
+Write-heavy system
+
+উদাহরণ:
+
+Logging system
+Analytics event collection
+IoT sensor data
+Tracking system
+
+এখানে অনেক data continuously write হচ্ছে।
+
+তখন আমরা চিন্তা করতে পারি:
+
+Application
+    ↓
+Message Queue
+    ↓
+Workers
+    ↓
+Database
+
+যেমন Kafka / RabbitMQ ব্যবহার করে write workload handle করা যেতে পারে।
+
+5. Sequential vs Random Access
+
+Data কীভাবে access হচ্ছে সেটাও গুরুত্বপূর্ণ।
+
+Sequential Access
+
+একটার পর একটা data access করা:
+
+1 → 2 → 3 → 4 → 5
+
+উদাহরণ:
+
+Read all transactions
+from January 1 to January 31
+Random Access
+
+নির্দিষ্ট জায়গার data access করা:
+
+1 → 5000 → 72 → 9999
+
+উদাহরণ:
+
+Find user with ID = 82917
+
+এক্ষেত্রে efficient indexing খুব গুরুত্বপূর্ণ।
+
+6. Hot Data vs Cold Data
+
+সব data সমানভাবে access হয় না।
+
+ধরো YouTube-এ:
+
+Popular video
+↓
+প্রতি মিনিটে লাখ লাখ views
+
+এটি Hot Data।
+
+অন্যদিকে:
+
+10 বছর আগের unpopular video
+↓
+মাসে 2 বার access
+
+এটি Cold Data।
+
+Hot data-এর জন্য:
+
+Redis / Cache
+
+ব্যবহার করা যেতে পারে।
+
+Cold data-এর জন্য:
+
+Cheap Storage
+Archive Storage
+
+ব্যবহার করা যেতে পারে।
+
+7. Access Pattern জানলে Database Design করা যায়
+
+ধরো তোমার application-এ সবচেয়ে বেশি query হচ্ছে:
+
+Get assessment by companyId
+
+তাহলে database-এ:
+
+companyId
+
+এর উপর index দেওয়া যৌক্তিক হতে পারে।
+
+আর যদি query হয়:
+
+Get submissions by candidateId
+ORDER BY createdAt DESC
+
+তাহলে access pattern অনুযায়ী composite index বিবেচনা করা যেতে পারে:
+
+(candidateId, createdAt)
+
+অর্থাৎ database schema শুধু entity দেখে design করলে হবে না।
+
+কীভাবে data query হবে সেটাও জানতে হবে।
+
+8. তোমার Developer Assessment Platform-এর Example
+
+তোমার project দিয়ে বুঝি।
+
+ধরো:
+
+Company
+   ↓
+Assessment
+   ↓
+Problems
+   ↓
+Candidate
+   ↓
+Attempt
+   ↓
+Submission
+
+Candidate assessment দেওয়ার সময়:
+
+1. Get assessment
+2. Get problems
+3. Submit answer
+4. Get next problem
+5. Submit answer
+6. Complete attempt
+7. Get result
+
+এখানে workload হতে পারে:
+
+Assessment Read       = Very High
+Problem Read         = Very High
+Submission Write     = High
+Result Read          = Medium
+Assessment Creation  = Low
+
+অর্থাৎ candidate side-এ system সম্ভবত:
+
+Read-heavy
+
+কিন্তু submission-এর সময়:
+
+Write workload
+
+অনেক গুরুত্বপূর্ণ।
+
+9. System Design Interview-এ কীভাবে বলবে?
+
+Interviewer যদি জিজ্ঞেস করে:
+
+"What are the workloads and access patterns?"
+
+তাহলে প্রথমে এই প্রশ্নগুলো করবে:
+
+1. How many users?
+2. How many requests per second?
+3. Read vs Write ratio?
+4. What data is accessed most frequently?
+5. Which queries are most common?
+6. Is traffic predictable or bursty?
+7. Are there hot keys/data?
+8. Do we need real-time access?
+9. What is the data retention period?
+
+তারপর architecture design করবে।
+
+10. একটি বাস্তব উদাহরণ
+
+ধরো তোমাকে একটি URL Shortener design করতে বলা হলো।
+
+User:
+
+POST /shorten
+
+কম ব্যবহার করে।
+
+কিন্তু:
+
+GET /abc123
+
+অনেক বেশি ব্যবহার করে।
+
+ধরো:
+
+Create URL
+= 100 requests/sec
+
+Redirect URL
+= 100,000 requests/sec
+
+তাহলে:
+
+Write = 100/sec
+Read  = 100,000/sec
+
+এটি একটি heavily read-heavy workload।
+
+তখন architecture হতে পারে:
+
+             Users
+               |
+               ↓
+          Load Balancer
+               |
+               ↓
+        Application Servers
+               |
+          ┌────┴────┐
+          ↓         ↓
+       Redis      Database
+       Cache
+
+কারণ একই short URL বারবার access হতে পারে।
+
+মনে রাখার সবচেয়ে সহজ Formula
+Workload
+=
+What operations are happening
++
+How frequently they happen
+Access Pattern
+=
+How the application reads/writes data
+
+আর System Design-এ:
+
+Workload
+      ↓
+Access Pattern
+      ↓
+Database / Cache / Queue Design
+      ↓
+Scalability
+
+এক লাইনে:
+
+Workload বলে system-এর উপর কী ধরনের এবং কতটা কাজ হচ্ছে; Access Pattern বলে সেই কাজের সময় data কীভাবে access করা হচ্ছে।
