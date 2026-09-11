@@ -1,0 +1,157 @@
+Markdown# 🏗️ System Design — Interview Preparation 
+
+> **System Design শেখার জন্য সহজ বাংলা নোট — Backend & Software Engineering Interview Preparation** 
+
+--- 
+
+## 📚 Table of Contents 
+
+- [System Design কী?](#-system-design-কী) 
+- [কেন System Design গুরুত্বপূর্ণ?](#-কেন-system-design-গুরুত্বপূর্ণ) 
+- [System Design-এর মূল ৪টি সিদ্ধান্ত](#-system-design-এর-মূল-৪টি-সিদ্ধান্ত) 
+    - [1. Components](#1-components) 
+    - [2. Data Boundaries](#2-data-boundaries) 
+    - [3. Interfaces](#3-interfaces) 
+    - [4. Operating Behavior](#4-operating-behavior) 
+- [Golden Rules](#-golden-rules) 
+- [Design বনাম Implementation](#-design-বনাম-implementation) 
+- [System Design Interview Approach](#-system-design-interview-approach) 
+- [Simple থেকে Large Scale](#-simple-থেকে-large-scale) 
+- [Interview Checklist](#-interview-checklist) 
+- [Quick Revision](#-quick-revision) 
+- [Key Takeaways](#-key-takeaways) 
+
+--- 
+
+# 🔹 System Design কী? 
+
+**System Design** হলো এমন একটি প্রক্রিয়া যেখানে একটি Software System-এর বিভিন্ন অংশ কীভাবে একে অপরের সাথে কাজ করবে, তা নির্ধারণ করা হয়। 
+
+সহজ ভাষায়: 
+
+> **System Design = একটি Software System-এর Architecture, Components, Data Flow এবং Interaction কীভাবে কাজ করবে তা পরিকল্পনা করা।** 
+
+System Design-এর মূল উদ্দেশ্য হলো নির্দিষ্ট কিছু **Requirements** পূরণ করার জন্য একটি কার্যকর ও নির্ভরযোগ্য System Architecture তৈরি করা। 
+
+### একটি সাধারণ উদাহরণ 
+
+ধরো আমরা একটি Backend Application তৈরি করছি: 
+
+```text 
+    Client 
+    │ 
+    ▼ 
+    **REST** **API** 
+    │ 
+    ▼ 
+    Application Server 
+    │          │ 
+    │          │ 
+    ▼          ▼ 
+    Cache      Database 
+এখানে আমাদের সিদ্ধান্ত নিতে হবে:Application Server কোথায় থাকবে? Database কোনটি ব্যবহার করব? Cache দরকার কি না? Client কীভাবে Server-এর সাথে যোগাযোগ করবে? Traffic বেড়ে গেলে কী হবে? কোনো Server বা Database কাজ না করলে কী হবে?এই architectural decision-গুলোই মূলত System Design।🎯 কেন System Design গুরুত্বপূর্ণ?ছোট একটি Application-এর ক্ষেত্রে Architecture সাধারণত খুব simple হতে পারে:Client → Server → Databaseকিন্তু User এবং Traffic বাড়তে থাকলে System-এর complexity বাড়ে:Plaintext    ┌──────────────┐ 
+    │    Client    │ 
+    └──────┬───────┘ 
+           │ 
+           ▼ 
+    ┌──────────────┐ 
+    │Load Balancer │ 
+    └──────┬───────┘ 
+           │ 
+    ┌──────┼──────┐ 
+    ▼      ▼      ▼ 
+    Server Server Server 
+    │      │      │ 
+    └──────┼──────┘ 
+           │ 
+    ┌──────┴──────┐ 
+    ▼             ▼ 
+    Cache         Database 
+Traffic বাড়লে আমাদের চিন্তা করতে হয়:ScalabilityPerformanceReliabilityAvailabilityDatabase LoadCachingLoad BalancingFailure HandlingRate LimitingData Consistencyতাই বড় Software System তৈরি করার আগে System Design সম্পর্কে পরিষ্কার ধারণা থাকা অত্যন্ত গুরুত্বপূর্ণ।🧩 System Design-এর মূল ৪টি সিদ্ধান্তএকটি Backend System Design করার সময় সাধারণত চারটি গুরুত্বপূর্ণ বিষয় নিয়ে চিন্তা করতে হয়:Plaintext┌─────────────────────────────────────┐ 
+│           **SYSTEM** **DESIGN**             │ 
+├─────────────────────────────────────┤ 
+│                                     │ 
+│  1️⃣ Components                      │ 
+│                                     │ 
+│  2️⃣ Data Boundaries                 │ 
+│                                     │ 
+│  3️⃣ Interfaces                      │ 
+│                                     │ 
+│  4️⃣ Operating Behavior              │ 
+│                                     │ 
+└─────────────────────────────────────┘ 
+1️⃣ ComponentsComponents হলো System-এর প্রধান Building Blocks।একটি Backend System-এ বিভিন্ন ধরনের Component থাকতে পারে:Application ServerDatabaseCacheMessage QueueLoad BalancerObject StorageSearch EngineAuthentication ServiceBackground WorkerExample:Plaintext    Client 
+    │ 
+    ▼ 
+    Load Balancer 
+    │ 
+    ┌──────┼──────┐ 
+    ▼      ▼      ▼ 
+    Server Server Server 
+    │      │      │ 
+    └──────┼──────┘ 
+           │ 
+    ┌──────┴──────┐ 
+    ▼             ▼ 
+    Redis         PostgreSQL 
+    │ 
+    ▼ 
+    Message Queue 
+প্রতিটি Component-এর একটি নির্দিষ্ট উদ্দেশ্য থাকা উচিত।Componentউদ্দেশ্যApplication ServerBusiness Logic চালানোDatabasePermanent Data সংরক্ষণRedisFrequently accessed data দ্রুত দেওয়াLoad BalancerTraffic distribute করাMessage QueueAsynchronous কাজ পরিচালনাObject StorageFile/Image সংরক্ষণSearch Engineদ্রুত Search করা⭐ গুরুত্বপূর্ণ Interview Rule:কোনো Component শুধু জনপ্রিয় বলে System-এ যোগ করা উচিত নয়। সবসময় প্রশ্ন করতে হবে: এই Component কেন দরকার?2️⃣ Data BoundariesData Boundaries বলতে বোঝায় System-এর কোন Data কোথায় থাকবে এবং কোন Storage হবে সেই Data-এর Source of Truth।Example:Plaintext    Application 
+    │ 
+    ┌──────┴──────┐ 
+    ▼             ▼ 
+    PostgreSQL    Redis 
+    │             │ 
+    │             └── Cache 
+    │ 
+    └── Source of Truth 
+এখানে:PostgreSQL → Permanent / Authoritative DataRedis → Temporary Cached DataSource of Truth কী?Source of Truth হলো এমন একটি Data Store যেখানে আসল এবং authoritative data সংরক্ষিত থাকে।Interview-এ নিজেকে প্রশ্ন করো:Data কোথায় Store হবে?কোন Database ব্যবহার করব?কোন Data Cache করা হবে?Source of Truth কোনটি?3️⃣ InterfacesInterfaces হলো System-এর বিভিন্ন অংশ কীভাবে একে অপরের সাথে যোগাযোগ করবে।Client এবং Backend-এর মধ্যে যোগাযোগের একটি সাধারণ মাধ্যম:PlaintextClient 
+  │ 
+  │ **HTTP** Request 
+  ▼ 
+**REST** **API** 
+  │ 
+  ▼ 
+Backend Server 
+Example REST API:POST /api/usersGET /api/usersGET /api/users/:idPATCH /api/users/:idDELETE /api/users/:idInternal Interface:একটি বড় System-এ বিভিন্ন Service-ও একে অপরের সাথে যোগাযোগ করতে পারে:PlaintextUser Service 
+  │ 
+  │ **API** / Message 
+  ▼ 
+Order Service 
+  │ 
+  │ Event 
+  ▼ 
+Payment Service 
+Communication হতে পারে:REST APIGraphQLgRPCMessage QueueEvent / Pub-Sub4️⃣ Operating BehaviorOperating Behavior বলতে বোঝায় System বিভিন্ন পরিস্থিতিতে কীভাবে behave করবে (High Traffic, Server Failure, Database Failure, Network Failure, Traffic Spike)।High Traffic Handle করতে:Plaintext    Client 
+    │ 
+    ▼ 
+    Load Balancer 
+    │ 
+    ┌──────┼──────┐ 
+    ▼      ▼      ▼ 
+    Server Server Server 
+Database Load কমাতে:PlaintextClient 
+  │ 
+  ▼ 
+Server 
+  │ 
+  ▼ 
+Redis 
+  ├── Cache Hit → Return Data 
+  │ 
+  └── Cache Miss → Database 
+Background Work:PlaintextClient 
+  │ 
+  ▼ 
+**API** Server 
+  │ 
+  ▼ 
+Message Queue 
+  │ 
+  ▼ 
+Worker 
+  │ 
+  ▼ 
+Email / Notification 
+🧠 Golden Rules🥇 Rule 1 — প্রতিটি Component-এর পেছনে কারণ থাকতে হবেDiagram-এ অনেকগুলো Box থাকলেই Design ভালো হয় না। প্রতিটি Component-এর জন্য প্রশ্ন করতে হবে: আমি এটি কেন ব্যবহার করছি?🥈 Rule 2 — Simple Design is Better❌ Most Complex Design ≠ Best Design✅ Most Appropriate Design = Best Design🥉 Rule 3 — Requirement অনুযায়ী Design করোSystem Design শুরু করার আগে Functional ও Non-Functional Requirement পরিষ্কারভাবে বুঝে নিতে হবে।💻 Design বনাম ImplementationImplementationSystem DesignCode-level details (Class, Function, Variable, Algorithm, Database Query)System-level architecture and component interactionএই Function কীভাবে কাজ করবে?এই পুরো System কীভাবে কাজ করবে?🎯 System Design Interview Approachএকটি ভালো Flow:Requirements Clarify করো (Users, Traffic, Data size, Features)Estimate Scale (Traffic, Storage requirements)High-Level Design (Simple Architecture থেকে শুরু করা)Data Design (SQL vs NoSQL, Schema, Index, Source of Truth)API / Interfaces (REST, gRPC, Input/Output)Scalability (Horizontal Scaling, Caching, DB Replication, Sharding)Failure Handling (Server crash, DB down, network issues)Trade-offs (Performance vs Consistency, Complexity vs Scalability)🚀 Simple থেকে Large Scale (Evolution)Level 1 (Basic): Client → Server → DatabaseLevel 2 (Scaling): Client → Load Balancer → Multiple Servers → DatabaseLevel 3 (Performance): Client → Load Balancer → Servers → Redis → DatabaseLevel 4 (Async): Client → API Servers → Queue → WorkersLevel 5 (Large Scale): Client → Load Balancer → API Servers (Cache, DB, Queue, Object Storage)✅ System Design Interview Checklist[ ] Requirements Clarify করেছি?[ ] Functional Requirements বুঝেছি?[ ] Non-Functional Requirements বুঝেছি?[ ] Expected Traffic জানি?[ ] Data Size সম্পর্কে ধারণা আছে?[ ] Main Components identify করেছি?[ ] Database নির্বাচন করেছি?[ ] Source of Truth নির্ধারণ করেছি?[ ] API / Interfaces design করেছি?[ ] Cache দরকার কি?[ ] Load Balancer দরকার কি?[ ] Async Processing দরকার কি?[ ] Failure Handling চিন্তা করেছি?[ ] Scalability চিন্তা করেছি?[ ] Security চিন্তা করেছি?[ ] Trade-offs ব্যাখ্যা করতে পারি?⚖️ Trade-offsSystem Design-এ প্রায় সব Decision-এর কিছু না কিছু Trade-off থাকে:Performance ↔ ConsistencyAvailability ↔ ConsistencyComplexity ↔ ScalabilityCost ↔ PerformancePro Tip: শুধু "আমি Redis ব্যবহার করব" না বলে বলুন: "আমি Redis ব্যবহার করব কারণ এই Data frequently accessed এবং caching-এর মাধ্যমে Database Load ও Response Latency কমানো যাবে।" (Decision → Reason → Trade-off)🔥 Key TakeawaysSystem Design মানে শুধু Diagram আঁকা নয়: Problem → Requirements → Architecture → Trade-offsপ্রতিটি Component-এর একটি কারণ থাকতে হবে: Why Redis? Why Queue? Why Load Balancer?Simple Design দিয়ে শুরু করো: Requirement যতটা চাইবে, Architecture ততটাই Complex হবে।Requirement First: Requirements clear না করে Architecture Design শুরু করা উচিত নয়।REMEMBER:"Start Small. Think Clearly. Scale Gradually. Always Know Why."Happy System Designing! 🚀
