@@ -1,0 +1,411 @@
+Functional Requirements → কী কাজ করবে?
+Non-Functional Requirements → কাজটা কেমনভাবে করবে?
+Constraints → কোন সীমাবদ্ধতার মধ্যে করতে হবে?
+
+চলো খুব সহজভাবে বুঝি। 👇
+
+1️⃣ Functional Requirements (FR)
+Functional Requirement কী?
+
+Functional Requirements বলে দেয় আমাদের System কী কী কাজ করবে।
+
+অর্থাৎ:
+
+"User এই System দিয়ে কী করতে পারবে?"
+
+এগুলো মূলত System-এর features / functionality।
+
+উদাহরণ: Facebook-এর মতো একটি System
+
+Functional Requirements হতে পারে:
+
+User account তৈরি করতে পারবে
+User login করতে পারবে
+User post তৈরি করতে পারবে
+User post দেখতে পারবে
+User অন্য User-কে follow করতে পারবে
+User like দিতে পারবে
+User comment করতে পারবে
+User message পাঠাতে পারবে
+
+অর্থাৎ:
+
+Functional Requirement
+        ↓
+System কী করবে?
+        ↓
+Features
+🛒 E-commerce Example
+
+ধরো আমরা একটি E-commerce System design করছি।
+
+Functional Requirements:
+
+User
+ │
+ ├── Register
+ ├── Login
+ ├── Search Product
+ ├── View Product
+ ├── Add to Cart
+ ├── Place Order
+ ├── Make Payment
+ └── Track Order
+
+এগুলো সব Functional Requirements।
+
+কারণ এগুলো System-এর actual functionality।
+
+2️⃣ Non-Functional Requirements (NFR)
+
+এখন আসি সবচেয়ে গুরুত্বপূর্ণ অংশে।
+
+Non-Functional Requirements বলে দেয় System কীভাবে কাজ করবে।
+
+অর্থাৎ:
+
+"System-এর functionality কীভাবে এবং কোন quality-তে কাজ করবে?"
+
+এগুলো সাধারণত System-এর quality attributes নিয়ে কথা বলে।
+
+উদাহরণ
+
+ধরো E-commerce System-এ:
+
+User product search করতে পারবে।
+
+এটি হলো Functional Requirement।
+
+কিন্তু:
+
+Product search result 200ms-এর মধ্যে return করতে হবে।
+
+এটি হলো Non-Functional Requirement।
+
+কারণ এখানে System কী করবে সেটা বলা হচ্ছে না; বরং কত দ্রুত করবে সেটা বলা হচ্ছে।
+
+🔥 Functional vs Non-Functional
+
+সহজভাবে মনে রাখো:
+
+Functional	Non-Functional
+কী করবে?	কীভাবে করবে?
+Features	Quality
+Business functionality	System characteristics
+Register	Fast
+Login	Secure
+Place Order	Highly Available
+Search Product	Scalable
+📌 Common Non-Functional Requirements
+
+System Design Interview-এ সাধারণত এগুলো গুরুত্বপূর্ণ:
+
+⚡ Performance
+
+System কত দ্রুত Response দেবে?
+
+API Response Time < 200ms
+📈 Scalability
+
+User বা Traffic বাড়লে System কি Handle করতে পারবে?
+
+1,000 users
+      ↓
+100,000 users
+      ↓
+10 Million users
+
+System যেন Traffic বাড়লেও কাজ করতে পারে।
+
+🟢 Availability
+
+System কতক্ষণ Available থাকবে?
+
+উদাহরণ:
+
+99.9% Availability
+99.99% Availability
+99.999% Availability
+
+সহজভাবে:
+
+User যখন System ব্যবহার করতে চাইবে, তখন System কতটা সময় Available থাকবে?
+
+🔒 Security
+
+System কতটা Secure?
+
+যেমন:
+
+Authentication
+Authorization
+Encryption
+Password Hashing
+Rate Limiting
+Input Validation
+💾 Reliability
+
+System সঠিকভাবে এবং Consistently কাজ করবে কি না।
+
+উদাহরণ:
+
+User টাকা দিয়ে Order করলো।
+
+System যেন:
+
+Payment Success
+       ↓
+Order Created
+
+এই Flow-তে Data হারিয়ে না ফেলে।
+
+🛠️ Maintainability
+
+System-এর Code এবং Architecture ভবিষ্যতে সহজে পরিবর্তন বা Maintain করা যাবে কি না।
+
+🔄 Fault Tolerance
+
+কোনো Component Fail করলেও System কতটা কাজ চালিয়ে যেতে পারবে।
+
+Server 1 ❌
+
+Server 2 ✅
+Server 3 ✅
+
+Server 1 fail করলেও অন্য Server Request Handle করতে পারে।
+
+3️⃣ Constraints
+
+এখন আসি Constraints-এ।
+
+Constraint কী?
+
+Constraint হলো System Design করার সময় আমাদের যে সীমাবদ্ধতা বা বাধাগুলোর মধ্যে থাকতে হবে।
+
+অর্থাৎ:
+
+"আমরা কী কী সীমার মধ্যে থেকে System Design করব?"
+
+💰 Example: Budget Constraint
+
+ধরো তোমাকে বলা হলো:
+
+"এই Application-এর Infrastructure Budget মাসে সর্বোচ্চ $500।"
+
+এটি একটি Constraint।
+
+তুমি চাইলে:
+
+20 Microservices
+Kafka
+Multiple Databases
+Multiple Regions
+Complex Infrastructure
+
+ব্যবহার করতে পারবে না যদি এগুলোর খরচ Budget-এর বাইরে চলে যায়।
+
+👥 Team Constraint
+
+ধরো Team-এ মাত্র ৩ জন Developer।
+
+তাহলে খুব Complex Microservices Architecture তৈরি করা practical নাও হতে পারে।
+
+3 Developers
+     ↓
+Simple Modular Monolith
+
+এটি বেশি appropriate হতে পারে।
+
+🧑‍💻 Technology Constraint
+
+কখনো Business বা Organization নির্দিষ্ট Technology ব্যবহার করতে বলতে পারে।
+
+উদাহরণ:
+
+Must use:
+PostgreSQL
+Node.js
+AWS
+
+তাহলে Architecture Design করার সময় এগুলো Constraint হিসেবে বিবেচনা করতে হবে।
+
+⏰ Time Constraint
+
+ধরো:
+
+"System-এর MVP ২ মাসের মধ্যে Launch করতে হবে।"
+
+এটিও Constraint।
+
+তখন:
+
+Simple Architecture
+      ↓
+Fast Development
+      ↓
+MVP Launch
+
+প্রাধান্য পেতে পারে।
+
+📊 Scale Constraint
+
+ধরো বলা হলো:
+
+Users = 10 Million
+Requests = 100,000 / second
+
+এটি Architecture-এর উপর বড় Constraint/requirement তৈরি করবে।
+
+একটি সাধারণ:
+
+Client → Server → Database
+
+Architecture হয়তো যথেষ্ট হবে না।
+
+তখন দরকার হতে পারে:
+
+Client
+  ↓
+Load Balancer
+  ↓
+Multiple Servers
+  ↓
+Cache
+  ↓
+Database Cluster
+🔥 তিনটাকে একসাথে বুঝি
+
+ধরো Interviewer বললো:
+
+"Design an Online Food Delivery System."
+
+তখন তুমি Requirements এভাবে বের করতে পারো।
+
+Functional Requirements
+
+System কী করবে?
+
+1. User restaurant দেখতে পারবে
+2. User food search করতে পারবে
+3. User order করতে পারবে
+4. User payment করতে পারবে
+5. Restaurant order receive করবে
+6. Delivery partner order receive করবে
+7. User order track করতে পারবে
+Non-Functional Requirements
+
+System কেমন হবে?
+
+1. Search response < 200ms
+2. Highly Available
+3. Scalable
+4. Secure
+5. Reliable
+6. Payment operation consistent হতে হবে
+Constraints
+
+কোন সীমাবদ্ধতার মধ্যে করতে হবে?
+
+1. Budget limited
+2. MVP 3 months-এর মধ্যে
+3. Existing PostgreSQL ব্যবহার করতে হবে
+4. Team ছোট
+5. Initially Bangladesh-এর মধ্যে operate করবে
+🧠 খুব সহজ Memory Trick
+
+এই তিনটা এভাবে মনে রাখো:
+
+┌─────────────────────────────────────┐
+│       SYSTEM DESIGN REQUIREMENTS    │
+├─────────────────────────────────────┤
+│                                     │
+│  Functional                         │
+│  ↓                                  │
+│  "WHAT?"                            │
+│  System কী করবে?                   │
+│                                     │
+│  Non-Functional                     │
+│  ↓                                  │
+│  "HOW WELL?"                        │
+│  কত ভালোভাবে করবে?                │
+│                                     │
+│  Constraints                        │
+│  ↓                                  │
+│  "LIMITS?"                          │
+│  কোন সীমার মধ্যে করতে হবে?        │
+│                                     │
+└─────────────────────────────────────┘
+🎯 Interview-এ কীভাবে প্রশ্ন করবে?
+
+System Design Interview শুরু হলে তুমি বলতে পারো:
+
+Functional
+
+"First, I'd like to clarify the core functionalities. What should users be able to do?"
+
+Non-Functional
+
+"What are the expected scale, latency, availability, and reliability requirements?"
+
+Constraints
+
+"Are there any technology, budget, infrastructure, or timeline constraints?"
+
+এরপর Architecture Design শুরু করবে।
+
+🚀 Real Interview Flow
+
+একটি System Design Interview-এ তোমার চিন্তাটা এমন হওয়া উচিত:
+
+                 Problem
+                    │
+                    ▼
+          Functional Requirements
+                    │
+                    ▼
+       Non-Functional Requirements
+                    │
+                    ▼
+               Constraints
+                    │
+                    ▼
+             Scale Estimation
+                    │
+                    ▼
+          High-Level Architecture
+                    │
+                    ▼
+          Database + Data Model
+                    │
+                    ▼
+            APIs + Interfaces
+                    │
+                    ▼
+        Scalability + Reliability
+                    │
+                    ▼
+              Trade-offs
+⭐ Final Shortcut
+
+সবচেয়ে সহজভাবে:
+
+Functional Requirements = System কী করবে?
+
+Non-Functional Requirements = System কত ভালোভাবে করবে?
+
+Constraints = কোন সীমাবদ্ধতার মধ্যে করবে?
+
+একটি ছোট Example:
+"User order করতে পারবে"
+        ↓
+Functional Requirement
+
+"Order API 200ms-এর মধ্যে response দেবে"
+        ↓
+Non-Functional Requirement
+
+"Monthly infrastructure budget $500"
+        ↓
+Constraint
+
+এই distinction-টা পরিষ্কার থাকলে System Design Interview-এর প্রথম এবং সবচেয়ে গুরুত্বপূর্ণ অংশ—Requirements Gathering—অনেক সহজ হয়ে যাবে।
