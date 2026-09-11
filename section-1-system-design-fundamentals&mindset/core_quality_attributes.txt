@@ -1,0 +1,412 @@
+Latency, Throughput এবং Bandwidth—এই তিনটি System Design-এর খুব গুরুত্বপূর্ণ Quality Attributes। Interview-এ এগুলো ভালোভাবে বোঝা দরকার।
+
+সহজভাবে মনে রাখো:
+
+Latency   → একটি request-এর উত্তর পেতে কত সময় লাগে?
+Throughput → নির্দিষ্ট সময়ে কতগুলো কাজ handle করা যায়?
+Bandwidth → নির্দিষ্ট সময়ে কত পরিমাণ data transfer করা যায়?
+⚡ 1. Latency
+Latency কী?
+
+Latency হলো কোনো request পাঠানোর পর তার response পেতে কত সময় লাগে।
+
+সহজ ভাষায়:
+
+Latency = কত দ্রুত একটি কাজের response পাওয়া যাচ্ছে।
+
+উদাহরণ:
+
+User
+  |
+  | Request
+  ↓
+Server
+  |
+  ↓
+Database
+  |
+  ↓
+Server
+  |
+  | Response
+  ↓
+User
+
+ধরো user request পাঠালো এবং:
+
+Request → Response = 100 ms
+
+তাহলে latency হলো 100 milliseconds।
+
+বাস্তব উদাহরণ
+
+তুমি একটি website-এ login করলে:
+
+Click Login
+     ↓
+Request sent
+     ↓
+Server processing
+     ↓
+Database query
+     ↓
+Response
+
+যদি পুরো process-এ 200 ms লাগে:
+
+Latency = 200 ms
+
+আর যদি 3 seconds লাগে:
+
+Latency = 3 seconds
+
+তাই সাধারণভাবে:
+
+Lower Latency = Faster Response
+Higher Latency = Slower Response
+Latency কমানোর উপায়
+
+System Design-এ latency কমানোর জন্য আমরা ব্যবহার করতে পারি:
+
+Caching
+Database indexing
+CDN
+Connection pooling
+Efficient queries
+Reduce network calls
+Keep services geographically closer
+Read replicas
+Asynchronous processing যেখানে উপযুক্ত
+
+উদাহরণ:
+
+Without Cache:
+
+Client
+  ↓
+Server
+  ↓
+Database
+  ↓
+Response
+
+Latency = 200 ms
+
+Cache ব্যবহার করলে:
+
+Client
+  ↓
+Server
+  ↓
+Redis
+  ↓
+Response
+
+Latency = 10 ms
+
+তবে বাস্তবে latency নির্ভর করবে system, network, workload এবং infrastructure-এর উপর।
+
+🚀 2. Throughput
+Throughput কী?
+
+Throughput হলো একটি নির্দিষ্ট সময়ে system কতগুলো request বা operation successfully process করতে পারে।
+
+সহজ ভাষায়:
+
+Throughput = System কতটা কাজ করতে পারে।
+
+সাধারণত মাপা হয়:
+
+Requests Per Second (RPS)
+Transactions Per Second (TPS)
+Operations Per Second
+
+উদাহরণ:
+
+Server
+   ↓
+1000 requests / second
+
+তাহলে:
+
+Throughput = 1000 requests/sec
+একটি সহজ উদাহরণ
+
+ধরো একটি restaurant আছে।
+
+Customer → Restaurant → Food
+
+একজন customer-এর food পেতে:
+
+10 minutes
+
+লাগছে।
+
+এটি অনেকটা Latency-এর মতো।
+
+কিন্তু restaurant প্রতি ঘণ্টায়:
+
+300 customers
+
+serve করতে পারে।
+
+এটি Throughput-এর মতো।
+
+অর্থাৎ:
+
+Latency
+= একটি কাজ শেষ হতে কত সময় লাগে
+
+Throughput
+= নির্দিষ্ট সময়ে কতগুলো কাজ শেষ করা যায়
+🔥 Latency vs Throughput
+
+ধরো একটি API:
+
+GET /products
+
+একটি request-এর response পেতে:
+
+Latency = 50 ms
+
+এবং server:
+
+10,000 requests/sec
+
+handle করতে পারে।
+
+তাহলে:
+
+Latency   = 50 ms
+Throughput = 10,000 RPS
+
+দুটো এক জিনিস নয়।
+
+📦 3. Bandwidth
+Bandwidth কী?
+
+Bandwidth হলো একটি network connection নির্দিষ্ট সময়ে সর্বোচ্চ কত পরিমাণ data transfer করতে পারে।
+
+সাধারণত:
+
+Mbps
+Gbps
+
+দিয়ে measure করা হয়।
+
+উদাহরণ:
+
+Network Bandwidth = 1 Gbps
+
+এর অর্থ network প্রতি second-এ সর্বোচ্চ প্রায় 1 gigabit data transfer করার capacity রাখে।
+
+বাস্তব উদাহরণ
+
+ধরো তুমি YouTube-এ একটি video দেখছো।
+
+Video data:
+
+Server
+   |
+   | Video Data
+   ↓
+Internet
+   |
+   ↓
+Your Device
+
+যদি video stream-এর জন্য:
+
+10 Mbps
+
+bandwidth দরকার হয়, তাহলে তোমার network-কে সেই data rate সামলাতে হবে।
+
+📊 Bandwidth বনাম Throughput
+
+এখানে অনেকেই confused হয়।
+
+Bandwidth
+
+Network-এর capacity।
+
+Bandwidth = 1 Gbps
+
+অর্থাৎ theoretical maximum capacity।
+
+Throughput
+
+বাস্তবে কত data/request successfully transfer/process হচ্ছে।
+
+Actual Throughput = 700 Mbps
+
+অর্থাৎ:
+
+Bandwidth = কতটা capacity আছে
+Throughput = বাস্তবে কতটা ব্যবহার হচ্ছে
+🧠 তিনটি একসাথে বুঝি
+
+ধরো একটি API server:
+
+Client
+  |
+  | Network
+  ↓
+Server
+  |
+  ↓
+Database
+
+এখন:
+
+Latency
+
+একটি request-এর response পেতে:
+
+100 ms
+Throughput
+
+Server প্রতি second-এ:
+
+5,000 requests
+
+handle করতে পারে।
+
+Bandwidth
+
+Network প্রতি second-এ:
+
+1 Gbps
+
+data transfer করতে পারে।
+
+তাহলে:
+
+Latency
+↓
+100 ms/request
+
+Throughput
+↓
+5,000 requests/sec
+
+Bandwidth
+↓
+1 Gbps
+🎯 System Design Example
+
+ধরো আমরা একটি image-sharing application design করছি।
+
+User image upload করছে:
+
+User
+ ↓
+API Server
+ ↓
+Object Storage
+
+এখানে তিনটি attribute গুরুত্বপূর্ণ।
+
+Latency
+
+User upload করার পর response কত দ্রুত পাবে?
+
+Upload request
+      ↓
+   500 ms
+      ↓
+Response
+Throughput
+
+System প্রতি second-এ কতগুলো image upload handle করতে পারে?
+
+10,000 uploads/sec
+Bandwidth
+
+প্রতি second-এ কত GB image data network দিয়ে যাচ্ছে?
+
+500 MB/sec
+⚖️ Interview-এ Trade-off
+
+সবসময় শুধু latency কমানো বা throughput বাড়ানোই লক্ষ্য নয়।
+
+কখনো কখনো একটার জন্য অন্যটাকে sacrifice করতে হয়।
+
+উদাহরণ:
+
+Strong Processing
+      ↓
+More work
+      ↓
+Higher Latency
+
+আবার:
+
+Caching
+   ↓
+Lower Latency
+   ↓
+Higher Cache Infrastructure Cost
+
+আর:
+
+Batch Processing
+   ↓
+Higher Throughput
+   ↓
+Individual request-এর latency বাড়তে পারে
+
+তাই interview-এ বলতে হবে:
+
+আমাদের primary requirement কী?
+
+যদি real-time chat হয়:
+
+Low Latency
+⭐⭐⭐⭐⭐
+
+Throughput
+⭐⭐⭐⭐
+
+Bandwidth
+⭐⭐⭐
+
+যদি video streaming হয়:
+
+Low Latency
+⭐⭐⭐
+
+Throughput
+⭐⭐⭐⭐
+
+Bandwidth
+⭐⭐⭐⭐⭐
+📝 Quick Revision
+Attribute	সহজ অর্থ	সাধারণ Unit
+Latency	একটি কাজের response পেতে কত সময়	ms, seconds
+Throughput	নির্দিষ্ট সময়ে কত কাজ handle করা যায়	RPS, TPS
+Bandwidth	নির্দিষ্ট সময়ে কত data transfer করা যায়	Mbps, Gbps
+মনে রাখার Shortcut
+Latency
+→ HOW FAST?
+
+Throughput
+→ HOW MUCH WORK?
+
+Bandwidth
+→ HOW MUCH DATA?
+
+আর System Design interview-এ এইভাবে চিন্তা করো:
+
+Requirements
+     ↓
+Latency
+     ↓
+Throughput
+     ↓
+Bandwidth
+     ↓
+Architecture
+     ↓
+Components
+     ↓
+Trade-offs
